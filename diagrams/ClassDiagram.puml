@@ -1,0 +1,91 @@
+@startuml
+class User {
+    - userId: int
+    - username: String
+    - email: String
+    - createdAt: LocalDateTime
+    + getUsername(): String
+    + getUserId(): int
+}
+
+class Exercise {
+    - exerciseId: int
+    - userId: int
+    - exerciseName: String
+    - durationMinutes: int
+    - caloriesBurned: int
+    - exerciseDate: LocalDate
+    + getExerciseName(): String
+    + getCaloriesBurned(): int
+}
+
+class Stats {
+    - statId: int
+    - userId: int
+    - totalExercises: int
+    - totalCalories: int
+    - totalDuration: int
+    - avgCaloriesPerSession: double
+    + getTotalCalories(): int
+    + getAvgCaloriesPerSession(): double
+}
+
+class UserDAO {
+    - userDAO: UserDAO
+    + registerUser(username, password, email): boolean
+    + loginUser(username, password): User
+    + userExists(username): boolean
+}
+
+class ExerciseDAO {
+    - exerciseDAO: ExerciseDAO
+    + addExercise(exercise): boolean
+    + getUserExercises(userId): List<Exercise>
+    + deleteExercise(exerciseId): boolean
+}
+
+class StatsDAO {
+    - statsDAO: StatsDAO
+    + createStats(userId): boolean
+    + updateStats(userId): void
+    + getStats(userId): Stats
+}
+
+class AuthController {
+    - currentUser: User
+    + registerUser(username, password, email): boolean
+    + loginUser(username, password): boolean
+    + logout(): void
+    + isLoggedIn(): boolean
+}
+
+class ExerciseController {
+    + addExercise(...): boolean
+    + getUserExercises(userId): List<Exercise>
+    + getUserStats(userId): Stats
+    + deleteExercise(exerciseId, userId): boolean
+}
+
+class LoginView {
+    + createLoginScene(): Scene
+    - showRegisterDialog(): void
+}
+
+class DashboardView {
+    + createDashboardScene(onLogout): Scene
+    - createAddExerciseTab(): VBox
+    - createHistoryTab(): VBox
+}
+
+User "1" -- "*" Exercise : has
+User "1" -- "1" Stats : has
+UserDAO -- User
+ExerciseDAO -- Exercise
+StatsDAO -- Stats
+AuthController -- UserDAO
+ExerciseController -- ExerciseDAO
+ExerciseController -- StatsDAO
+LoginView -- AuthController
+DashboardView -- AuthController
+DashboardView -- ExerciseController
+@enduml
